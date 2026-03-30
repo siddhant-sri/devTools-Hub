@@ -20,4 +20,8 @@ export class LogsService {
     
     return this.logModel.find(filters).sort({ createdAt: -1 }).limit(100).exec();
   }
+
+  async removeAll(): Promise<{ deletedCount: number }> {
+    return this.logModel.deleteMany({}).exec();
+  }
 }
