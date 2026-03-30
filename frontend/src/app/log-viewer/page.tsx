@@ -8,7 +8,7 @@ import { Filter, Pause, Play, Trash2 } from 'lucide-react';
 import axios from 'axios';
 
 let socket: Socket | null = null;
-
+ 
 export default function LogViewerPage() {
   const store = useLogStore();
   const [isPaused, setIsPaused] = useState(false);
@@ -16,13 +16,15 @@ export default function LogViewerPage() {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    // Initi  al fetch of logs
-    axios.get('http://localhost:3001/logs').then(res => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
+    // Initial fetch of logs
+    axios.get(`${apiUrl}/logs`).then(res => {
       store.setLogs(res.data);
     }).catch(() => console.error("Initial logs fetch failed"));
 
     // Socket setup
-    socket = io('http://localhost:3001');
+    socket = io(apiUrl);
 
     socket.on('connect', () => {
       store.setConnected(true);
