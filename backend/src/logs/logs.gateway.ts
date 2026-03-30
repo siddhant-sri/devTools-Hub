@@ -8,7 +8,12 @@ import {
 import { Server, Socket } from 'socket.io';
 import { LogsService } from './logs.service';
 
-@WebSocketGateway({ cors: { origin: '*' } })
+@WebSocketGateway({ 
+  cors: { 
+    origin: process.env.CORS_ORIGIN === '*' ? true : (process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : '*'),
+    credentials: true,
+  } 
+})
 export class LogsGateway {
   @WebSocketServer()
   server: Server;

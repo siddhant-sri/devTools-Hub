@@ -25,7 +25,8 @@ export default function ApiTesterPage() {
       }, {} as any);
 
       // We hit our backend proxy to avoid CORS
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      if (!apiUrl) throw new Error('API URL is not defined in environment variables');
       const res = await axios.post(`${apiUrl}/proxy`, {
         url: store.url,
         method: store.method,

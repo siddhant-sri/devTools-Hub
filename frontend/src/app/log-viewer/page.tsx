@@ -16,7 +16,11 @@ export default function LogViewerPage() {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    if (!apiUrl) {
+      console.error("API URL is not defined in environment variables");
+      return;
+    }
 
     // Initial fetch of logs
     axios.get(`${apiUrl}/logs`).then(res => {
