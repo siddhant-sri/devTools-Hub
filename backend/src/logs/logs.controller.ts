@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Delete } from '@nestjs/common';
 import { LogsService } from './logs.service';
 import { LogsGateway } from './logs.gateway';
 
@@ -22,8 +22,15 @@ export class LogsController {
       serviceName: body.serviceName || 'test-service',
       context: body.context || {},
     });
-    // Broadcast via websocket
     this.logsGateway.server.emit('new_log', log);
     return log;
+  }
+
+  @Delete()
+  async clearLogs() {
+    await this.logsService.removeAll();
+    // Broadcast clearance to all clients if needed, or they can just wipe local state
+    this.logsGateway.server.emit('clear_logs');
+    return { success: true };
   }
 }

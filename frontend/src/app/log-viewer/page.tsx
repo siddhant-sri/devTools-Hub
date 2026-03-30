@@ -53,9 +53,11 @@ export default function LogViewerPage() {
     };
 
     socket.on('new_log', handleNewLog);
+    socket.on('clear_logs', store.clearLogs);
 
     return () => {
       socket?.off('new_log', handleNewLog);
+      socket?.off('clear_logs', store.clearLogs);
     };
   }, [isPaused, store]);
 
@@ -125,7 +127,13 @@ export default function LogViewerPage() {
               <span>{isPaused ? 'Resume' : 'Pause'}</span>
             </button>
             <button 
-              onClick={store.clearLogs}
+              onClick={() => {
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+                if (apiUrl) {
+                  axios.delete(`${apiUrl}/logs`).catch(console.error);
+                }
+                store.clearLogs();
+              }}
               className="flex items-center space-x-1.5 px-3 py-1.5 rounded-md text-sm font-medium bg-[#27272a] text-zinc-300 hover:bg-red-500/20 hover:text-red-400 transition-colors"
             >
               <Trash2 className="w-4 h-4" />
